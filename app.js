@@ -64,7 +64,7 @@ app.set('view engine', 'ejs');
 
 // port setting
 console.log('config.server_port : %d', config.server_port);
-app.set('port', process.env.PORT || app.get('port'));
+app.set('port', process.env.PORT || 3000);
 
 // router setup
 app.use(bodyParser.json());
