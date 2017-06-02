@@ -1,0 +1,132 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script type="text/javascript" >
+        window.onload = function(){
+
+            function getDataPointsFromCSV(csv) {
+                var dataPoints = csvLines = [];
+
+                csvLines = csv.split(/[\r?\n|\r|\n]+/);
+
+                for (var i = 0; i < csvLines.length; i++) {
+                    if (csvLines[i].length > 0) {
+
+                        dataPoints.push({
+                            x: parseFloat(i),
+                            y: parseFloat(csvLines[i])
+                        });
+                    }
+                    //                console.dir(dataPoints);
+                }
+                return dataPoints;
+            }
+
+            $.get("./heartrate.csv", function (data_hr) {
+                $.get("./ecg.csv", function (data) {
+
+                    var dps1 = [{x: 0, y: 0}];
+
+                    var chart = new CanvasJS.Chart("chartContainer", {
+                        title: {
+                            text: "Heart Rate",
+                            fontWeight: "bolder",
+                            fontColor: "#008B8B",
+                            fontFamily: "tahoma",
+
+                            fontSize: 25,
+                            padding: 10
+                        },
+                        axisX: {
+                            labelFontSize: 0
+                        },
+                        data: [{
+                            type: "line",
+                            dataPoints: dps1
+                        }]
+                    });
+
+                    chart.render();
+
+                    var dps2 = getDataPointsFromCSV(data);
+                    var dps_hr = getDataPointsFromCSV(data_hr);
+
+
+                    var xVal = 1;
+                    var yVal = 0;
+                    var updateInterval1 = 10;
+                    var updateInterval2 = 10 * dps2.length / dps_hr.length;
+
+                    console.log(dps_hr[1]);
+
+                    var updateChart1 = function () {
+                        yVal = dps2[xVal].y;
+
+                        dps1.push({x: xVal, y: yVal});
+
+                        xVal++;
+
+                        if (dps1.length > 500) {
+                            dps1.shift();
+                        }
+
+                        chart.render();
+
+                        // update chart after specified time.
+                    };
+
+                    var idx = 0;
+                    var updateChart2 = function () {
+
+                        chart.options.title.text = "Heart Rate: " + parseInt(dps_hr[idx].y) + "BPM";
+                        idx++;
+                        chart.render();
+
+                        // update chart after specified time.
+
+                    };
+
+                    setInterval(function () {
+                        updateChart1()
+                    }, updateInterval1);
+
+                    setInterval(function () {
+                        updateChart2()
+                    }, updateInterval2);
+                });
+            });
+        }
+    </script>
+    <script type="text/javascript" src="canvasjs.min.js"></script>
+</head>
+<body>
+
+<div id="chartContainer" style="height: 300px; width: 100%;"></div>
+<div class="container-fluid">
+    <div class="col-sm-6">
+        <div class="well">
+            <h4><span class="fa fa-user"></span> 사용자 정보</h4>
+            <br>
+            <p>
+                <strong>이메일</strong>: <%= user.email %>
+                <br><br>
+                <strong>이름</strong>: <%= user.name %>
+                <br><br>
+                <strong>나이</strong>: <%= user.age %>
+                <br><br>
+                <strong>성별</strong>: <%= user.sex %>
+                <br><br>
+                <strong>주소</strong>: <%= user.address %>
+            </p>
+            <br>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+
+    <title>프로필 화면</title>
+
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"> <!-- load bootstrap css -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"> <!-- load fontawesome -->
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+
+
+    <script type="text/javascript" >
+        $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js',function(){
+            $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.pie.min.js',function(){
+                $.getScript('//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.resize.min.js',function(){
+
+
+                    // real-time chart
+                    // we use an inline data source in the example, usually data would
+                    // be fetched from a server
+                    var data = [], totalPoints = 200;
+                    function getRandomData() {
+
+                        if (data.length > 0)
+                            data = data.slice(1);
+
+                        // do a random walk
+                        while (data.length < totalPoints) {
+                            var prev = data.length > 0 ? data[data.length - 1] : 50;
+                            var y = prev + Math.random() * 10 - 5;
+                            if (y < 0)
+                                y = 0;
+                            if (y > 100)
+                                y = 100;
+                            data.push(y);
+                        }
+
+                        // zip the generated y values with the x values
+                        var res = [];
+                        for (var i = 0; i < data.length; ++i)
+                            res.push([i, data[i]])
+                        return res;
+                    }
+
+                    // setup control widget
+                    var updateInterval = 500;
+                    $("#updateInterval").val(updateInterval).change(function () {
+                        var v = $(this).val();
+                        if (v && !isNaN(+v)) {
+                            updateInterval = +v;
+                            if (updateInterval < 1)
+                                updateInterval = 1;
+                            if (updateInterval > 2000)
+                                updateInterval = 2000;
+                            $(this).val("" + updateInterval);
+                        }
+                    });
+
+                    // setup plots
+                    var options = {
+                        grid:{borderColor:'#ccc'},
+                        series:{shadowSize:0,color:"#33ff33"},
+                        yaxis:{min:0,max:100},
+                        xaxis:{show:true}
+                    };
+
+                    var plot = $.plot($("#chart1"), [ getRandomData() ], options);
+
+                    function update() {
+                        plot.setData([ getRandomData() ]);
+                        plot.draw();
+                        setTimeout(update, updateInterval);
+                    }
+
+                    update();
+
+                });// end getScript (resize)
+            });// end getScript (pie)
+        });// end getScript
+    </script>
+    <style>
+        /* CSS used here will be applied after bootstrap.css */
+
+        .big-chart {
+            width:100%;
+            height:220px;
+        }
+
+        body        { padding-top:80px; }
+    </style>
+
+</head>
+<body>
+<h2 class="text-center">Examples using Flot</h2>
+<div class="container">
+    <h4 class="text-center">Real-time</h4>
+    <div id="chart1" class="big-chart"></div>
+</div>
+<hr>
+<div class="container">
+    <div class="row">
+
+        <div class="col-sm-6">
+            <div class="well">
+                <h3><span class="fa fa-user"></span> 로컬 프로필 정보</h3>
+                <br>
+                <p>
+                    <strong>이메일</strong>: <%= user.email %>
+                    <br><br>
+                    <strong>이름</strong>: <%= user.name %>
+                    <br><br>
+                    <strong>나이</strong>: <%= user.age %>
+                    <br><br>
+                    <strong>성별</strong>: <%= user.sex %>
+                    <br><br>
+                    <strong>주소</strong>: <%= user.address %>
+                </p>
+                <br>
+
+            </div>
+            <a href="/logout" class="btn btn-default btn-sm">로그아웃</a>
+        </div>
+
+    </div>
+
+
+
+
+</div>
+
+</body>
+</html>
