@@ -1,9 +1,6 @@
 {
   "name": "moduleexam",
   "version": "0.0.0",
-  "engines": {
-    "node" : "7.8.0"
-  },
   "private": true,
   "scripts": {
     "start": "node ./bin/www"
@@ -29,6 +26,7 @@
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "pug": "^2.0.0-rc.1",
+    "semantic-ui": "^2.2.10",
     "serve-favicon": "~2.3.0"
   }
 }
