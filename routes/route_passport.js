@@ -35,6 +35,7 @@ module.exports = function(router, passport){
            return;
        }else{
            console.log('[[push]] log in');
+           console.dir(req.user);
 
            if (Array.isArray(req.user)) {
                res.render('profile.ejs', {user: req.user[0]._doc});

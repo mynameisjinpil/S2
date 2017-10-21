@@ -132,7 +132,13 @@
                                 chart.options.axisX.titleFontColor = "#689F38";
                             }
 
-                            idx++;
+                            if(idx == dps_r.length || idx == dps_hr.length){
+                                idx = 0;
+							}else{
+                                idx++;
+							}
+
+
 
                             chart.render();
 
